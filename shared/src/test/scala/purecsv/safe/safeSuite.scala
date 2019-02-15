@@ -20,8 +20,8 @@ import java.nio.file.Files
 import purecsv.safe._
 import purecsv.safe.tryutil._
 import purecsv.util.serializeAndDeserialize
-
-import org.scalatest.{Matchers, FunSuite}
+import org.scalatest.{FunSuite, Matchers}
+import purecsv.safe.converter.defaults.string.Trimming.NoAction
 
 import scala.util.Success
 
