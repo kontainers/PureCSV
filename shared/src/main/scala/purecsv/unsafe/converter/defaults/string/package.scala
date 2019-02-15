@@ -16,6 +16,7 @@ package purecsv.unsafe.converter.defaults
 
 import java.util.UUID
 
+import purecsv.safe.converter.defaults.string.Trimming
 import purecsv.unsafe.converter.StringConverterUtils
 
 package object string {
@@ -43,14 +44,14 @@ package object string {
   implicit val shortc:  StringConverter[Short]   = mkStringConverter(_.toShort,_.toString)
   implicit val uuidc:   StringConverter[UUID]    = mkStringConverter(UUID.fromString,_.toString)
   implicit val stringc: StringConverter[String]  = new StringConverter[String] {
-    override def from(s: String): String = s
+    override def from(s: String, trimming: Trimming): String = s
     override def to(s: String): String = "\"" + s.replaceAllLiterally("\"", "\"\"") + "\""
   }
 
   implicit def optionc[A](implicit ac: StringConverter[A]): StringConverter[Option[A]] = new StringConverter[Option[A]] {
-    override def from(s: String): Option[A] = s match {
+    override def from(s: String, trimming: Trimming): Option[A] = s match {
       case "" => None
-      case x  => Some(ac.from(x))
+      case x  => Some(ac.from(x, trimming))
     }
     override def to(v: Option[A]): String = v.map(ac.to).getOrElse("")
   }

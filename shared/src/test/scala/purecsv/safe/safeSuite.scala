@@ -59,7 +59,7 @@ class safeSuite extends FunSuite with Matchers {
     val csvReader = CSVReader[Event]
     val csvReaderDeserialized = serializeAndDeserialize(csvReader)
 
-    val result = csvReaderDeserialized.readCSVFromString("123|bar|\n456|foo|3", '|', false)
+    val result = csvReaderDeserialized.readCSVFromString("123|bar|\n456|foo|3", '|', NoAction, false)
 
     result.length should be (2)
     result should be (List(
