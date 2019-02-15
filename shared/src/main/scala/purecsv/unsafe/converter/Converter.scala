@@ -15,6 +15,7 @@
 package purecsv.unsafe.converter
 
 import purecsv.safe.converter.defaults.string.Trimming
+import purecsv.safe.converter.defaults.string.Trimming.NoAction
 
 /** Typeclass for Converters of A from/to B */
 trait Converter[A,B] extends Serializable {
@@ -45,8 +46,8 @@ object StringConverter {
 }
 
 object StringConverterUtils {
-  def mkStringConverter[A](fromF: String => A, toF: A => String) = new StringConverter[A] {
-    def from(s: String, trimming: Trimming): A = fromF(s)
+  def mkStringConverter[A](fromF: (String, Trimming) => A, toF: A => String) = new StringConverter[A] {
+    def from(s: String, trimming: Trimming = NoAction): A = fromF(s, trimming)
     def to(a: A): String = toF(a)
   }
 }
