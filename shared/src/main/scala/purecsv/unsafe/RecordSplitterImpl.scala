@@ -16,17 +16,24 @@ package purecsv.unsafe
 
 import java.io.Reader
 
+import com.github.tototoshi.csv.{DefaultCSVFormat, Quoting}
+
 
 /**
- * A [[purecsv.unsafe.RecordSplitter]] that uses the OpenCSV library for extracting records from a [[Reader]]
+ * A [[purecsv.unsafe.RecordSplitter]] that uses the scala-csv library for extracting records from a [[Reader]]
  */
 object RecordSplitterImpl extends RecordSplitter[Reader] {
 
   override def getRecords(reader: Reader,
                           fieldSep: Char,
-                          quoteChar: Char,
-                          firstLine: Int): Iterator[Array[String]] = {
-    val csvReader = new com.github.marklister.collections.io.CSVReader(reader, fieldSep, quoteChar, firstLine)
-    csvReader.filter(array => array.size != 1 || array(0) != "") // skip empty lines
+                          quoteCharacter: Char,
+                          firstLine: Int): Iterator[Iterable[String]] = {
+
+    implicit val csvFormat = new DefaultCSVFormat {
+      override val delimiter: Char = fieldSep
+      override val quoteChar: Char = quoteCharacter
+    }
+    val csvReader = com.github.tototoshi.csv.CSVReader.open(reader)
+    csvReader.iterator.filter(array => array.size != 1 || array(0) != "") // skip empty lines
   }
 }

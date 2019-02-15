@@ -27,7 +27,7 @@ object RecordSplitter {
 trait RecordSplitter[R] {
 
   /** Split the input [[R]] into records, where each record is a sequence of raw fields */
-  def getRecords(r: R, fieldSep: Char, quoteChar: Char, firstLine: Int): Iterator[Array[String]]
+  def getRecords(r: R, fieldSep: Char, quoteChar: Char, firstLine: Int): Iterator[Iterable[String]]
 
   /**
    * Like [[getRecords(R, Char, Char, Int):Iterator[Seq[String]]*]] but with all parameters except the first set
@@ -35,7 +35,7 @@ trait RecordSplitter[R] {
    */
   def getRecords(r: R,
                 fieldSep:  Char = RecordSplitter.defaultFieldSeparator,
-                quoteChar: Char = RecordSplitter.defaultQuoteChar): Iterator[Array[String]] = {
+                quoteChar: Char = RecordSplitter.defaultQuoteChar): Iterator[Iterable[String]] = {
     getRecords(r, fieldSep, quoteChar,0)
   }
 
@@ -45,7 +45,7 @@ trait RecordSplitter[R] {
    */
   def getRecordsSkipHeader(r: R,
                 fieldSep:  Char = RecordSplitter.defaultFieldSeparator,
-                quoteChar: Char = RecordSplitter.defaultQuoteChar): Iterator[Array[String]] = {
+                quoteChar: Char = RecordSplitter.defaultQuoteChar): Iterator[Iterable[String]] = {
     getRecords(r, fieldSep, quoteChar,1)
   }
 }
