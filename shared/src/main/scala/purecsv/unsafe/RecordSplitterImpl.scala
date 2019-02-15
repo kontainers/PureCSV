@@ -34,6 +34,7 @@ object RecordSplitterImpl extends RecordSplitter[Reader] {
       override val quoteChar: Char = quoteCharacter
     }
     val csvReader = com.github.tototoshi.csv.CSVReader.open(reader)
-    csvReader.iterator.filter(array => array.size != 1 || array(0) != "") // skip empty lines
+    val filtered = csvReader.iterator.filter(array => array.size != 1 || array(0) != "") // skip empty lines
+    filtered.drop(firstLine)
   }
 }

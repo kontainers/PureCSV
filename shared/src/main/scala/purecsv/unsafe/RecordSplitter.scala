@@ -30,7 +30,7 @@ trait RecordSplitter[R] {
   def getRecords(r: R, fieldSep: Char, quoteChar: Char, firstLine: Int): Iterator[Iterable[String]]
 
   /**
-   * Like [[getRecords(R, Char, Char, Int):Iterator[Seq[String]]*]] but with all parameters except the first set
+   * Like [[getRecords(R, Char, Char, Int):Iterator[Iterable[String]]*]] but with all parameters except the first set
    * to defaults and first line set to 0
    */
   def getRecords(r: R,
@@ -40,7 +40,7 @@ trait RecordSplitter[R] {
   }
 
   /**
-   * Like [[getRecords(R, Char, Char, Int):Iterator[Seq[String]]*]] but with all parameters except the first set
+   * Like [[getRecords(R, Char, Char, Int):Iterator[Iterable[String]]*]] but with all parameters except the first set
    * to defaults and first line set to 1 to skip the first line. Useful to skip headers.
    */
   def getRecordsSkipHeader(r: R,
