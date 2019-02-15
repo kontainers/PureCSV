@@ -48,7 +48,7 @@ object StringConverter {
 
 object StringConverterUtils {
   def mkStringConverter[A](fromF: (String, Trimming) => Try[A], toF: A => String) = new StringConverter[A] {
-    def tryFrom(s: String, trimming: Trimming): Try[A] = fromF(s, trimming)
+    def tryFrom(s: String, trimming: Trimming = NoAction): Try[A] = fromF(s, trimming)
     def to(a: A): String = toF(a)
   }
 }
