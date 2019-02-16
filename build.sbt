@@ -37,19 +37,7 @@ lazy val publishSettings = Seq(
   )
 )
 
-lazy val noPublishSettings = Seq(
-  publish := { },
-  publishLocal := { },
-  publishArtifact := false
-)
-
-lazy val root = project.in(file(".")).
-  aggregate(pureCSVJVM, pureCSVJS).
-  settings(buildSettings).
-  settings(publishSettings).
-  settings(noPublishSettings)
-
-lazy val pureCSV = crossProject.crossType(CrossType.Full).in(new File(".")).
+lazy val pureCSV = project.in(file(".")).
   settings(buildSettings).
   settings(publishSettings).
   settings(
@@ -66,11 +54,4 @@ lazy val pureCSV = crossProject.crossType(CrossType.Full).in(new File(".")).
       Resolver.sonatypeRepo("releases"),
       Resolver.sonatypeRepo("snapshots")
     )
-  ).
-  jvmSettings(
-  ).
-  jsSettings(
   )
-
-lazy val pureCSVJVM = pureCSV.jvm
-lazy val pureCSVJS  = pureCSV.js
