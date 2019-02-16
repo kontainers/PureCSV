@@ -14,9 +14,6 @@
  */
 package purecsv.unsafe
 
-import java.io.Reader
-
-
 object RecordSplitter {
   val defaultFieldSeparator = ','
   val defaultFieldSeparatorStr = defaultFieldSeparator.toString
@@ -27,7 +24,7 @@ object RecordSplitter {
 trait RecordSplitter[R] {
 
   /** Split the input [[R]] into records, where each record is a sequence of raw fields */
-  def getRecords(r: R, fieldSep: Char, quoteChar: Char, firstLine: Int): Iterator[Iterable[String]]
+  def getRecords(r: R, fieldSep: Char, quoteChar: Char, firstLineHeader: Boolean): Iterator[Iterable[String]]
 
   /**
    * Like [[getRecords(R, Char, Char, Int):Iterator[Iterable[String]]*]] but with all parameters except the first set
@@ -36,7 +33,7 @@ trait RecordSplitter[R] {
   def getRecords(r: R,
                 fieldSep:  Char = RecordSplitter.defaultFieldSeparator,
                 quoteChar: Char = RecordSplitter.defaultQuoteChar): Iterator[Iterable[String]] = {
-    getRecords(r, fieldSep, quoteChar,0)
+    getRecords(r, fieldSep, quoteChar, false)
   }
 
   /**
@@ -46,6 +43,6 @@ trait RecordSplitter[R] {
   def getRecordsSkipHeader(r: R,
                 fieldSep:  Char = RecordSplitter.defaultFieldSeparator,
                 quoteChar: Char = RecordSplitter.defaultQuoteChar): Iterator[Iterable[String]] = {
-    getRecords(r, fieldSep, quoteChar,1)
+    getRecords(r, fieldSep, quoteChar, true)
   }
 }

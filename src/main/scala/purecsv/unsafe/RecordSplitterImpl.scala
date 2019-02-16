@@ -27,7 +27,7 @@ object RecordSplitterImpl extends RecordSplitter[Reader] {
   override def getRecords(reader: Reader,
                           fieldSep: Char,
                           quoteCharacter: Char,
-                          firstLine: Int): Iterator[Iterable[String]] = {
+                          firstLineHeader: Boolean): Iterator[Iterable[String]] = {
 
     implicit val csvFormat = new DefaultCSVFormat {
       override val delimiter: Char = fieldSep
@@ -35,6 +35,10 @@ object RecordSplitterImpl extends RecordSplitter[Reader] {
     }
     val csvReader = com.github.tototoshi.csv.CSVReader.open(reader)
     val filtered = csvReader.iterator.filter(array => array.size != 1 || array(0) != "") // skip empty lines
-    filtered.drop(firstLine)
+    if (firstLineHeader) {
+      filtered.drop(1)
+    } else {
+      filtered
+    }
   }
 }
