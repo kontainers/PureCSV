@@ -77,7 +77,7 @@ package object safe {
     }
 
     def readCSVFromString(s: String,
-                          delimiter:Char = RecordSplitter.defaultFieldSeparator,
+                          delimiter: Char = RecordSplitter.defaultFieldSeparator,
                           trimming: Trimming = NoAction,
                           skipHeader: Boolean = false
                           ): List[Try[A]] = {
@@ -90,7 +90,7 @@ package object safe {
     }
 
     def readCSVFromFile(f: File,
-                        delimiter:Char = RecordSplitter.defaultFieldSeparator,
+                        delimiter: Char = RecordSplitter.defaultFieldSeparator,
                         trimming: Trimming = NoAction,
                         skipHeader: Boolean = false): List[Try[A]] = {
       val r = new BufferedReader(new FileReader(f))
