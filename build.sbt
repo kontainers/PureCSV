@@ -25,7 +25,7 @@ lazy val publishSettings = Seq(
         </license>
       </licenses>
       <scm>
-        <url>git@github.com:melrief/PureCSV.git</url>
+        <url>git@github.com:kontainers/PureCSV.git</url>
         <connection>scm:git:git@github.com:kontainers/PureCSV.git</connection>
       </scm>
       <developers>
