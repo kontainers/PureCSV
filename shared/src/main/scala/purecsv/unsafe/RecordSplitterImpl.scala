@@ -30,7 +30,7 @@ object RecordSplitterImpl extends RecordSplitter[Reader] {
                           firstLine: Int,
                           trimming: Trimming): Iterator[Array[String]] = {
     val csvReader = new com.github.marklister.collections.io.CSVReader(reader, fieldSep, quoteChar, firstLine)
-    val mappedReader= csvReader.map(line => line.map(trimming.trim(_)))
+    val mappedReader = csvReader.map(line => line.map(trimming.trim(_)))
     mappedReader.filter(array => array.size != 1 || array(0) != "") // skip empty lines
   }
 }
