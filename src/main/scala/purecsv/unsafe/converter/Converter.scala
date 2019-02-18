@@ -47,6 +47,13 @@ object StringConverterUtils {
     def from(s: String): A = fromF(s)
     def to(a: A): String = toF(a)
   }
+  def quoteTextIfNecessary(s: String): String = {
+    if (s.contains("\"")) {
+      "\"" + s.replaceAllLiterally("\"", "\"\"") + "\""
+    } else {
+      s
+    }
+  }
 }
 
 /** Converter from/to raw fields, represented as sequence of strings */

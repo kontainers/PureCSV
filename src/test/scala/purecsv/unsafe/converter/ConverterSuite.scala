@@ -20,6 +20,7 @@ import purecsv.unsafe.converter.defaults.rawfields._
 import purecsv.unsafe.converter.defaults.string._
 import purecsv.util.serializeAndDeserialize
 import org.scalatest.{FunSuite, Matchers}
+import purecsv.safe.converter.RawFieldsConverter
 import shapeless.{::, Generic, HNil}
 
 case class Event(ts: Long, msg: String)
@@ -42,19 +43,19 @@ class ConverterSuite extends FunSuite with Matchers {
   }
 
   test("conversion HNil <-> String works") {
-    RawFieldsConverter[HNil].to(HNil) should contain theSameElementsInOrderAs  (Seq.empty)
+    RawFieldsConverter[HNil].to(HNil) should contain theSameElementsInOrderAs (Seq.empty)
     RawFieldsConverter[HNil].from(Seq.empty) should be (HNil)
   }
 
   test("conversion HList <-> String works") {
     val conv = RawFieldsConverter[String :: Int :: HNil]
-    conv.to("test" :: 1 :: HNil) should contain theSameElementsInOrderAs (Seq("\"test\"","1"))
+    conv.to("test" :: 1 :: HNil) should contain theSameElementsInOrderAs (Seq("test","1"))
     conv.from(Seq("foo","2")) should be ("foo" :: 2 :: HNil)
   }
 
   test("conversion case class <-> String works") {
     val conv = RawFieldsConverter[Event]
-    conv.to(Event(1,"foobar")) should contain theSameElementsInOrderAs(Seq("1","\"foobar\""))
+    conv.to(Event(1,"foobar")) should contain theSameElementsInOrderAs(Seq("1","foobar"))
     conv.from(Seq("2","barfoo")) should be (Event(2,"barfoo"))
   }
 
@@ -77,20 +78,26 @@ class ConverterSuite extends FunSuite with Matchers {
 
   test("conversion class with custom Generic <-> String works") {
     val conv = RawFieldsConverter[Event2]
-    conv.to(new Event2(1,"foo")) should contain theSameElementsInOrderAs(Seq("1","\"foo\""))
+    conv.to(new Event2(1,"foo")) should contain theSameElementsInOrderAs(Seq("1","foo"))
     conv.from(Seq("2","bar")) should be (new Event2(2,"bar"))
 
     // Strings are quoted
     val event = new Event2(1,"foo")
-    val expectedEvent = new Event2(1, "\"foo\"")
-    conv.from(conv.to(event)) should be (expectedEvent)
+    conv.from(conv.to(event)) should be (event)
+  }
+
+  test("conversion String -> class with custom Generic works - with quotes") {
+    val conv = RawFieldsConverter[Event2]
+    // Strings are quoted
+    val event = new Event2(1,"""with "quotes"""")
+    conv.to(event) should be (Seq("1", "\"with \"\"quotes\"\"\""))
   }
 
   test("serializing a RawFieldsConverter should work") {
     val conv = RawFieldsConverter[Event]
     val convDeserialized = serializeAndDeserialize(conv)
 
-    convDeserialized.to(Event(1,"foobar")) should contain theSameElementsInOrderAs(Seq("1","\"foobar\""))
+    convDeserialized.to(Event(1,"foobar")) should contain theSameElementsInOrderAs(Seq("1","foobar"))
     convDeserialized.from(Seq("2","barfoo")) should be (Event(2,"barfoo"))
   }
 }
