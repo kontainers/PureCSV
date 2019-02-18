@@ -14,6 +14,9 @@
  */
 package purecsv.unsafe
 
+import purecsv.safe.converter.defaults.string.Trimming
+
+
 object RecordSplitter {
   val defaultFieldSeparator = ','
   val defaultFieldSeparatorStr = defaultFieldSeparator.toString
@@ -24,16 +27,17 @@ object RecordSplitter {
 trait RecordSplitter[R] {
 
   /** Split the input [[R]] into records, where each record is a sequence of raw fields */
-  def getRecords(r: R, fieldSep: Char, quoteChar: Char, firstLineHeader: Boolean): Iterator[Iterable[String]]
+  def getRecords(r: R, fieldSep: Char, quoteChar: Char, firstLineHeader: Boolean, trimming: Trimming): Iterator[Iterable[String]]
 
   /**
    * Like [[getRecords(R, Char, Char, Int):Iterator[Iterable[String]]*]] but with all parameters except the first set
    * to defaults and first line set to 0
    */
   def getRecords(r: R,
-                fieldSep:  Char = RecordSplitter.defaultFieldSeparator,
-                quoteChar: Char = RecordSplitter.defaultQuoteChar): Iterator[Iterable[String]] = {
-    getRecords(r, fieldSep, quoteChar, false)
+                 fieldSep: Char = RecordSplitter.defaultFieldSeparator,
+                 quoteChar: Char = RecordSplitter.defaultQuoteChar,
+                 trimming: Trimming = Trimming.NoAction): Iterator[Iterable[String]] = {
+    getRecords(r, fieldSep, quoteChar, false, trimming)
   }
 
   /**
@@ -41,8 +45,9 @@ trait RecordSplitter[R] {
    * to defaults and first line set to 1 to skip the first line. Useful to skip headers.
    */
   def getRecordsSkipHeader(r: R,
-                fieldSep:  Char = RecordSplitter.defaultFieldSeparator,
-                quoteChar: Char = RecordSplitter.defaultQuoteChar): Iterator[Iterable[String]] = {
-    getRecords(r, fieldSep, quoteChar, true)
+                           fieldSep: Char = RecordSplitter.defaultFieldSeparator,
+                           quoteChar: Char = RecordSplitter.defaultQuoteChar,
+                           trimming: Trimming = Trimming.NoAction): Iterator[Iterable[String]] = {
+    getRecords(r, fieldSep, quoteChar, true, trimming)
   }
 }

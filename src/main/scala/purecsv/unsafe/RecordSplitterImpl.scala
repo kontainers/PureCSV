@@ -16,7 +16,8 @@ package purecsv.unsafe
 
 import java.io.Reader
 
-import com.github.tototoshi.csv.{DefaultCSVFormat, Quoting}
+import com.github.tototoshi.csv.DefaultCSVFormat
+import purecsv.safe.converter.defaults.string.Trimming
 
 
 /**
@@ -27,14 +28,16 @@ object RecordSplitterImpl extends RecordSplitter[Reader] {
   override def getRecords(reader: Reader,
                           fieldSep: Char,
                           quoteCharacter: Char,
-                          firstLineHeader: Boolean): Iterator[Iterable[String]] = {
+                          firstLineHeader: Boolean,
+                          trimming: Trimming): Iterator[Iterable[String]] = {
 
     implicit val csvFormat = new DefaultCSVFormat {
       override val delimiter: Char = fieldSep
       override val quoteChar: Char = quoteCharacter
     }
     val csvReader = com.github.tototoshi.csv.CSVReader.open(reader)
-    val filtered = csvReader.iterator.filter(array => array.size != 1 || array(0) != "") // skip empty lines
+    val mappedReader = csvReader.iterator.map(line => line.map(trimming.trim(_)))
+    val filtered = mappedReader.filter(array => array.size != 1 || array(0) != "") // skip empty lines
     if (firstLineHeader) {
       filtered.drop(1)
     } else {
