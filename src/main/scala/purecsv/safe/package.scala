@@ -20,8 +20,10 @@ import purecsv.safe.converter.defaults.string.Trimming
 import purecsv.safe.converter.defaults.string.Trimming.NoAction
 import purecsv.unsafe.{RecordSplitter, RecordSplitterImpl}
 import purecsv.safe.converter.{RawFieldsConverter, StringConverter}
+import purecsv.safe.tryutil.ClassUtil.caseClassParams
 import shapeless.{::, Generic, HList, HNil}
 
+import scala.reflect.runtime.universe.TypeTag
 import scala.util.Try
 
 
@@ -66,12 +68,13 @@ package object safe {
     def readCSVFromReader(r: Reader,
                           delimiter: Char = RecordSplitter.defaultFieldSeparator,
                           trimming: Trimming = NoAction,
-                          skipHeader: Boolean = false
+                          skipHeader: Boolean = false,
+                          fields: List[String],
                           ): Iterator[Try[A]] = {
       val records = if (skipHeader) {
-        RecordSplitterImpl.getRecordsSkipHeader(r, delimiter, trimming = trimming)
+        RecordSplitterImpl.getRecordsSkipHeader(r, fields, delimiter, trimming = trimming)
       } else {
-        RecordSplitterImpl.getRecords(r, delimiter, trimming = trimming)
+        RecordSplitterImpl.getRecords(r, fields, delimiter, trimming = trimming)
       }
       records.map(record => rfc.tryFrom(record.toSeq))
     }
@@ -80,10 +83,11 @@ package object safe {
                           delimiter: Char = RecordSplitter.defaultFieldSeparator,
                           trimming: Trimming = NoAction,
                           skipHeader: Boolean = false
-                          ): List[Try[A]] = {
+                          )(implicit typeTag: TypeTag[A]): List[Try[A]] = {
       val r = new StringReader(s)
+      val fields = caseClassParams[A]
       try {
-        readCSVFromReader(r, delimiter, trimming, skipHeader).toList
+        readCSVFromReader(r, delimiter, trimming, skipHeader, fields).toList
       } finally {
         r.close()
       }
@@ -92,10 +96,11 @@ package object safe {
     def readCSVFromFile(f: File,
                         delimiter: Char = RecordSplitter.defaultFieldSeparator,
                         trimming: Trimming = NoAction,
-                        skipHeader: Boolean = false): List[Try[A]] = {
+                        skipHeader: Boolean = false)(implicit typeTag: TypeTag[A]): List[Try[A]] = {
       val r = new BufferedReader(new FileReader(f))
+      val fields = caseClassParams[A]
       try {
-        readCSVFromReader(r, delimiter, trimming, skipHeader).toList
+        readCSVFromReader(r, delimiter, trimming, skipHeader, fields).toList
       } finally {
         r.close()
       }
@@ -104,7 +109,7 @@ package object safe {
     def readCSVFromFileName(fileName: String,
                             delimiter:Char = RecordSplitter.defaultFieldSeparator,
                             trimming: Trimming = NoAction,
-                            skipHeader: Boolean = false): List[Try[A]] = {
+                            skipHeader: Boolean = false)(implicit typeTag: TypeTag[A]): List[Try[A]] = {
       readCSVFromFile(new File(fileName), delimiter, trimming, skipHeader)
     }
 

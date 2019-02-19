@@ -19,19 +19,18 @@ import java.io.Reader
 import com.github.tototoshi.csv.DefaultCSVFormat
 import purecsv.safe.converter.defaults.string.Trimming
 
-
 /**
- * A [[purecsv.unsafe.RecordSplitter]] that uses the scala-csv library for extracting records from a [[Reader]]
- */
+  * A [[purecsv.unsafe.RecordSplitter]] that uses the scala-csv library for extracting records from a [[Reader]]
+  */
 object RecordSplitterImpl extends RecordSplitter[Reader] {
 
   override def getRecords(reader: Reader,
                           fieldSep: Char,
                           quoteCharacter: Char,
                           firstLineHeader: Boolean,
-                          trimming: Trimming): Iterator[Iterable[String]] = {
-
-    implicit val csvFormat = new DefaultCSVFormat {
+                          trimming: Trimming,
+                          fields: List[String]): Iterator[Iterable[String]] = {
+    implicit val csvFormat: DefaultCSVFormat = new DefaultCSVFormat {
       override val delimiter: Char = fieldSep
       override val quoteChar: Char = quoteCharacter
     }
@@ -39,9 +38,9 @@ object RecordSplitterImpl extends RecordSplitter[Reader] {
     val mappedReader = csvReader.iterator.map(line => line.map(trimming.trim(_)))
     val filtered = mappedReader.filter(array => array.size != 1 || array(0) != "") // skip empty lines
     if (firstLineHeader) {
-      filtered.drop(1)
+      toValuesIteratorWithHeadersOrdering(csvReader, trimming, fields)
     } else {
-      filtered
+      toValuesIteratorWithoutHeadersOrdering(csvReader, trimming)
     }
   }
 }
