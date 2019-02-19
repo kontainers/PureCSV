@@ -65,13 +65,11 @@ package object unsafe {
     def readCSVFromReader(r: Reader,
                           delimiter: Char = RecordSplitter.defaultFieldSeparator,
                           skipHeader: Boolean = false,
-                          trimming: Trimming = NoAction,
-                          fields: Seq[String]
-                          ): Iterator[A] = {
+                          trimming: Trimming = NoAction)(implicit typeTag: TypeTag[A]): Iterator[A] = {
       val records = if (skipHeader) {
         RecordSplitterImpl.getRecordsSkipHeader(r, delimiter, trimming = trimming)
       } else {
-        RecordSplitterImpl.getRecords(r, fields, delimiter, trimming = trimming)
+        RecordSplitterImpl.getRecords(r, caseClassParams[A], delimiter, trimming = trimming)
       }
       records.map(record => rfc.from(record.toSeq))
     }
@@ -81,9 +79,8 @@ package object unsafe {
                           delimiter:Char = RecordSplitter.defaultFieldSeparator,
                           trimming: Trimming = NoAction)(implicit typeTag: TypeTag[A]): List[A] = {
       val r = new StringReader(s)
-      val fields = caseClassParams[A]
       try {
-        readCSVFromReader(r, delimiter, skipHeader, trimming, fields).toList
+        readCSVFromReader(r, delimiter, skipHeader, trimming).toList
       } finally {
         r.close()
       }
@@ -93,12 +90,10 @@ package object unsafe {
     def readCSVFromFile(f: File,
                         skipHeader: Boolean = false,
                         delimiter:Char = RecordSplitter.defaultFieldSeparator,
-                        trimming: Trimming = NoAction,
-                        fields: Seq[String])(implicit typeTag: TypeTag[A]): List[A] = {
+                        trimming: Trimming = NoAction)(implicit typeTag: TypeTag[A]): List[A] = {
       val r = new BufferedReader(new FileReader(f))
-      val fields = caseClassParams[A]
       try {
-        readCSVFromReader(r, delimiter, skipHeader, trimming, fields).toList
+        readCSVFromReader(r, delimiter, skipHeader, trimming).toList
       } finally {
         r.close()
       }
@@ -107,9 +102,8 @@ package object unsafe {
     def readCSVFromFileName(fileName: String,
                             skipHeader: Boolean = false,
                             delimiter:Char = RecordSplitter.defaultFieldSeparator,
-                            trimming: Trimming = NoAction,
-                            fields: Seq[String])(implicit typeTag: TypeTag[A]): List[A] = {
-      readCSVFromFile(new File(fileName), skipHeader, delimiter, trimming, fields)
+                            trimming: Trimming = NoAction)(implicit typeTag: TypeTag[A]): List[A] = {
+      readCSVFromFile(new File(fileName), skipHeader, delimiter, trimming)
     }
 
   }

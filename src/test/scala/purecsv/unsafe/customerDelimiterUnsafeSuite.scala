@@ -33,13 +33,13 @@ class customerDelimiterUnsafeSuite extends FunSuite with Matchers {
 
   test("Reading events from a String reader works") {
     val reader = new CharArrayReader(rawEvents.mkString(System.lineSeparator()).toCharArray)
-    CSVReader[Event].readCSVFromReader(reader, '|', true, NoAction, Nil).toSeq should be (events)
+    CSVReader[Event].readCSVFromReader(reader, '|', true, NoAction).toSeq should be (events)
   }
 
   test("Can read a file written with writeCSVToFile") {
     val file = Files.createTempFile("casecsv",".csv").toFile
     file.deleteOnExit()
     events.writeCSVToFile(file, "☃")
-    CSVReader[Event].readCSVFromFile(file, true, '☃', fields = Nil) should contain theSameElementsInOrderAs events
+    CSVReader[Event].readCSVFromFile(file, true, '☃') should contain theSameElementsInOrderAs events
   }
 }

@@ -80,8 +80,7 @@ package object safe {
     def readCSVFromString(s: String,
                           delimiter: Char = RecordSplitter.defaultFieldSeparator,
                           trimming: Trimming = NoAction,
-                          skipHeader: Boolean = false
-                         )(implicit typeTag: TypeTag[A]): List[Try[A]] = {
+                          skipHeader: Boolean = false)(implicit typeTag: TypeTag[A]): List[Try[A]] = {
       val r = new StringReader(s)
       try {
         readCSVFromReader(r, delimiter, trimming, skipHeader).toList
