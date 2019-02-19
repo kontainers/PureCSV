@@ -9,6 +9,7 @@ lazy val buildSettings = Seq(
 lazy val publishSettings = Seq(
   publishMavenStyle := true,
   publishArtifact in Test := false,
+  releasePublishArtifactsAction := PgpKeys.publishSigned.value,
   publishTo := Some(
     if (isSnapshot.value)
       Opts.resolver.sonatypeSnapshots
@@ -25,7 +26,7 @@ lazy val publishSettings = Seq(
         </license>
       </licenses>
       <scm>
-        <url>git@github.com:melrief/PureCSV.git</url>
+        <url>git@github.com:kontainers/PureCSV.git</url>
         <connection>scm:git:git@github.com:kontainers/PureCSV.git</connection>
       </scm>
       <developers>
@@ -37,19 +38,7 @@ lazy val publishSettings = Seq(
   )
 )
 
-lazy val noPublishSettings = Seq(
-  publish := { },
-  publishLocal := { },
-  publishArtifact := false
-)
-
-lazy val root = project.in(file(".")).
-  aggregate(pureCSVJVM, pureCSVJS).
-  settings(buildSettings).
-  settings(publishSettings).
-  settings(noPublishSettings)
-
-lazy val pureCSV = crossProject.crossType(CrossType.Full).in(new File(".")).
+lazy val pureCSV = project.in(file(".")).
   settings(buildSettings).
   settings(publishSettings).
   settings(
@@ -60,18 +49,10 @@ lazy val pureCSV = crossProject.crossType(CrossType.Full).in(new File(".")).
       "com.chuusai" %% "shapeless" % "2.3.3",
       compilerPlugin("org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.full),
       "org.scalatest" %% "scalatest" % "3.0.5" % Test,
-      "com.github.marklister" %%% "product-collections" % "1.4.5"
+      "com.github.tototoshi" %% "scala-csv" % "1.3.5"
     ),
     resolvers ++= Seq(
       Resolver.sonatypeRepo("releases"),
       Resolver.sonatypeRepo("snapshots")
     )
-  ).
-  jvmSettings(
-    libraryDependencies += "com.opencsv" % "opencsv" % "4.5"
-  ).
-  jsSettings(
   )
-
-lazy val pureCSVJVM = pureCSV.jvm
-lazy val pureCSVJS  = pureCSV.js
