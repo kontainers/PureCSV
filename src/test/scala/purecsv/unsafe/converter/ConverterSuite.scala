@@ -20,7 +20,6 @@ import purecsv.unsafe.converter.defaults.rawfields._
 import purecsv.unsafe.converter.defaults.string._
 import purecsv.util.serializeAndDeserialize
 import org.scalatest.{FunSuite, Matchers}
-import purecsv.safe.converter.RawFieldsConverter
 import shapeless.{::, Generic, HNil}
 
 case class Event(ts: Long, msg: String)
@@ -99,5 +98,12 @@ class ConverterSuite extends FunSuite with Matchers {
 
     convDeserialized.to(Event(1,"foobar")) should contain theSameElementsInOrderAs(Seq("1","foobar"))
     convDeserialized.from(Seq("2","barfoo")) should be (Event(2,"barfoo"))
+  }
+
+  test("quoteTextIfNecessary should work") {
+    StringConverterUtils.quoteTextIfNecessary("abc") shouldBe "abc"
+    StringConverterUtils.quoteTextIfNecessary("text with \"quotes\"") shouldBe "\"text with \"\"quotes\"\"\""
+    StringConverterUtils.quoteTextIfNecessary("a,b,c") shouldBe "\"a,b,c\""
+    StringConverterUtils.quoteTextIfNecessary("a\nb") shouldBe "\"a\nb\""
   }
 }
