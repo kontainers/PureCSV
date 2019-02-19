@@ -106,4 +106,5 @@ class ConverterSuite extends FunSuite with Matchers {
     StringConverterUtils.quoteTextIfNecessary("a,b,c") shouldBe "\"a,b,c\""
     StringConverterUtils.quoteTextIfNecessary("a\nb") shouldBe "\"a\nb\""
   }
+
 }
