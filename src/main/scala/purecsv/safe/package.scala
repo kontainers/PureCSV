@@ -69,8 +69,7 @@ package object safe {
                           delimiter: Char = RecordSplitter.defaultFieldSeparator,
                           trimming: Trimming = NoAction,
                           skipHeader: Boolean = false,
-                          fields: List[String],
-                          ): Iterator[Try[A]] = {
+                          fields: List[String]): Iterator[Try[A]] = {
       val records = if (skipHeader) {
         RecordSplitterImpl.getRecordsSkipHeader(r, fields, delimiter, trimming = trimming)
       } else {
