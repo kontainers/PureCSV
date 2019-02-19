@@ -23,21 +23,21 @@ import org.scalatest.{FunSuite, Matchers}
 class RecordSplitterSuite extends FunSuite with Matchers {
   test("RecordSplitterImpl works with no records") {
     val reader = new CharArrayReader("".toCharArray)
-    RecordSplitterImpl.getRecordsSkipHeader(reader, Nil).toSeq should contain theSameElementsInOrderAs Seq.empty
+    RecordSplitterImpl.getRecordsSkipHeader(reader).toSeq should contain theSameElementsInOrderAs Seq.empty
   }
 
   test("RecordSplitterImpl works with two records") {
     val reader = new CharArrayReader("foo,bar\nbar,foo".toCharArray)
-    RecordSplitterImpl.getRecordsSkipHeader(reader, Nil).toSeq should contain theSameElementsInOrderAs Seq(Array("foo", "bar"), Array("bar", "foo"))
+    RecordSplitterImpl.getRecordsSkipHeader(reader).toSeq should contain theSameElementsInOrderAs Seq(Array("foo", "bar"), Array("bar", "foo"))
   }
 
   test("RecordSplitterImpl works with custom delimiter") {
     val reader = new CharArrayReader("foo|bar\nbar|foo".toCharArray)
-    RecordSplitterImpl.getRecordsSkipHeader(reader, Nil, '|').toSeq should contain theSameElementsInOrderAs Seq(Array("foo", "bar"), Array("bar", "foo"))
+    RecordSplitterImpl.getRecordsSkipHeader(reader, '|').toSeq should contain theSameElementsInOrderAs Seq(Array("foo", "bar"), Array("bar", "foo"))
   }
 
   test("RecordSplitterImpl works with custom UTF8 delimiter") {
     val reader = new CharArrayReader("foo☃bar\nbar☃foo".toCharArray)
-    RecordSplitterImpl.getRecordsSkipHeader(reader, Nil, '☃').toSeq should contain theSameElementsInOrderAs Seq(Array("foo", "bar"), Array("bar", "foo"))
+    RecordSplitterImpl.getRecordsSkipHeader(reader, '☃').toSeq should contain theSameElementsInOrderAs Seq(Array("foo", "bar"), Array("bar", "foo"))
   }
 }

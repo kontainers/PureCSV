@@ -45,13 +45,13 @@ package object safe {
   // Raw Fields
   implicit val deriveHNil: RawFieldsConverter[HNil] = purecsv.safe.converter.defaults.rawfields.deriveHNil
   implicit def deriveHCons[V, T <: HList](implicit sc:  StringConverter[V],
-                                                  fto: RawFieldsConverter[T])
-                                                     : RawFieldsConverter[V :: T] = {
+                                          fto: RawFieldsConverter[T])
+  : RawFieldsConverter[V :: T] = {
     purecsv.safe.converter.defaults.rawfields.deriveHCons
   }
   implicit def deriveClass[A, R](implicit gen: Generic.Aux[A, R],
-                                         conv: RawFieldsConverter[R])
-                                             : RawFieldsConverter[A] = {
+                                 conv: RawFieldsConverter[R])
+  : RawFieldsConverter[A] = {
     purecsv.safe.converter.defaults.rawfields.deriveClass
   }
 
@@ -68,12 +68,11 @@ package object safe {
     def readCSVFromReader(r: Reader,
                           delimiter: Char = RecordSplitter.defaultFieldSeparator,
                           trimming: Trimming = NoAction,
-                          skipHeader: Boolean = false,
-                          fields: List[String]): Iterator[Try[A]] = {
+                          skipHeader: Boolean = false)(implicit typeTag: TypeTag[A]): Iterator[Try[A]] = {
       val records = if (skipHeader) {
-        RecordSplitterImpl.getRecordsSkipHeader(r, fields, delimiter, trimming = trimming)
+        RecordSplitterImpl.getRecordsSkipHeader(r, delimiter, trimming = trimming)
       } else {
-        RecordSplitterImpl.getRecords(r, fields, delimiter, trimming = trimming)
+        RecordSplitterImpl.getRecords(r, caseClassParams[A], delimiter, trimming = trimming)
       }
       records.map(record => rfc.tryFrom(record.toSeq))
     }
@@ -82,11 +81,10 @@ package object safe {
                           delimiter: Char = RecordSplitter.defaultFieldSeparator,
                           trimming: Trimming = NoAction,
                           skipHeader: Boolean = false
-                          )(implicit typeTag: TypeTag[A]): List[Try[A]] = {
+                         )(implicit typeTag: TypeTag[A]): List[Try[A]] = {
       val r = new StringReader(s)
-      val fields = caseClassParams[A]
       try {
-        readCSVFromReader(r, delimiter, trimming, skipHeader, fields).toList
+        readCSVFromReader(r, delimiter, trimming, skipHeader).toList
       } finally {
         r.close()
       }
@@ -97,9 +95,8 @@ package object safe {
                         trimming: Trimming = NoAction,
                         skipHeader: Boolean = false)(implicit typeTag: TypeTag[A]): List[Try[A]] = {
       val r = new BufferedReader(new FileReader(f))
-      val fields = caseClassParams[A]
       try {
-        readCSVFromReader(r, delimiter, trimming, skipHeader, fields).toList
+        readCSVFromReader(r, delimiter, trimming, skipHeader).toList
       } finally {
         r.close()
       }

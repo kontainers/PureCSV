@@ -31,7 +31,7 @@ object RecordSplitterImpl extends RecordSplitter[Reader] {
                           quoteCharacter: Char,
                           firstLineHeader: Boolean,
                           trimming: Trimming,
-                          fields: List[String]): Iterator[Iterable[String]] = {
+                          fields: Seq[String]): Iterator[Iterable[String]] = {
     implicit val csvFormat: DefaultCSVFormat = new DefaultCSVFormat {
       override val delimiter: Char = fieldSep
       override val quoteChar: Char = quoteCharacter
@@ -45,7 +45,7 @@ object RecordSplitterImpl extends RecordSplitter[Reader] {
     }
   }
 
-  private def toValuesIteratorWithHeadersOrdering(csvReader: TototoshiCSVReader, trimming: Trimming, fields: List[String]) =
+  private def toValuesIteratorWithHeadersOrdering(csvReader: TototoshiCSVReader, trimming: Trimming, fields: Seq[String]) =
     csvReader.iteratorWithHeaders
       .map(line => line.mapValues(trimming.trim))
       .map(f => fields.map(field => f.getOrElse(field, EmptyString)))

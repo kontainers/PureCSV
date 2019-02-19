@@ -27,14 +27,18 @@ object RecordSplitter {
 trait RecordSplitter[R] {
 
   /** Split the input [[R]] into records, where each record is a sequence of raw fields */
-  def getRecords(r: R, fieldSep: Char, quoteChar: Char, firstLineHeader: Boolean, trimming: Trimming, fields: List[String]): Iterator[Iterable[String]]
+  def getRecords(r: R, fieldSep: Char,
+                 quoteChar: Char,
+                 firstLineHeader: Boolean,
+                 trimming: Trimming,
+                 fields: Seq[String]): Iterator[Iterable[String]]
 
   /**
    * Like [[getRecords(R, Char, Char, Int):Iterator[Iterable[String]]*]] but with all parameters except the first set
    * to defaults and first line set to 0
    */
   def getRecords(r: R,
-                 fields: List[String],
+                 fields: Seq[String],
                  fieldSep: Char = RecordSplitter.defaultFieldSeparator,
                  quoteChar: Char = RecordSplitter.defaultQuoteChar,
                  trimming: Trimming = Trimming.NoAction): Iterator[Iterable[String]] = {
@@ -46,10 +50,9 @@ trait RecordSplitter[R] {
    * to defaults and first line set to 1 to skip the first line. Useful to skip headers.
    */
   def getRecordsSkipHeader(r: R,
-                           fields: List[String],
                            fieldSep: Char = RecordSplitter.defaultFieldSeparator,
                            quoteChar: Char = RecordSplitter.defaultQuoteChar,
                            trimming: Trimming = Trimming.NoAction): Iterator[Iterable[String]] = {
-    getRecords(r, fieldSep, quoteChar, false, trimming, fields)
+    getRecords(r, fieldSep, quoteChar, false, trimming, Seq.empty)
   }
 }

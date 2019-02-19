@@ -14,9 +14,6 @@
  */
 package purecsv.unsafe.converter
 
-import purecsv.safe.converter.defaults.string.Trimming
-import purecsv.safe.converter.defaults.string.Trimming.NoAction
-
 /** Typeclass for Converters of A from/to B */
 trait Converter[A,B] extends Serializable {
   /**

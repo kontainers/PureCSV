@@ -14,9 +14,6 @@
  */
 package purecsv.safe.converter
 
-import purecsv.safe.converter.defaults.string.Trimming
-import purecsv.safe.converter.defaults.string.Trimming.NoAction
-
 import scala.util.{Failure, Success, Try}
 
 

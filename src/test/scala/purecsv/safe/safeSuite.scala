@@ -38,12 +38,12 @@ class safeSuite extends FunSuite with Matchers {
 
   test("Reading events from a String reader works") {
     val reader = new CharArrayReader(rawEvents.mkString(System.lineSeparator()).toCharArray)
-    CSVReader[Event].readCSVFromReader(reader, ',', NoAction, true, Nil).toSeq should contain theSameElementsInOrderAs events.map(Success(_))
+    CSVReader[Event].readCSVFromReader(reader, ',', NoAction, true).toSeq should contain theSameElementsInOrderAs events.map(Success(_))
   }
 
   test("Reading events and get successes and failures works") {
     val reader = new CharArrayReader(rawEvents.mkString(System.lineSeparator()).toCharArray)
-    val (successes,failures) = CSVReader[Event].readCSVFromReader(reader, ',', NoAction, true, Nil).getSuccessesAndFailures
+    val (successes,failures) = CSVReader[Event].readCSVFromReader(reader, ',', NoAction, true).getSuccessesAndFailures
     val expectedSuccesses = Seq(1 -> events(0), 2 -> events(1))
     successes should contain theSameElementsInOrderAs expectedSuccesses
     failures should be (Seq.empty[Event])

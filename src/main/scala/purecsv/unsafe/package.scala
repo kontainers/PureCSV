@@ -66,10 +66,10 @@ package object unsafe {
                           delimiter: Char = RecordSplitter.defaultFieldSeparator,
                           skipHeader: Boolean = false,
                           trimming: Trimming = NoAction,
-                          fields: List[String]
+                          fields: Seq[String]
                           ): Iterator[A] = {
       val records = if (skipHeader) {
-        RecordSplitterImpl.getRecordsSkipHeader(r, fields, delimiter, trimming = trimming)
+        RecordSplitterImpl.getRecordsSkipHeader(r, delimiter, trimming = trimming)
       } else {
         RecordSplitterImpl.getRecords(r, fields, delimiter, trimming = trimming)
       }
@@ -94,7 +94,7 @@ package object unsafe {
                         skipHeader: Boolean = false,
                         delimiter:Char = RecordSplitter.defaultFieldSeparator,
                         trimming: Trimming = NoAction,
-                        fields: List[String])(implicit typeTag: TypeTag[A]): List[A] = {
+                        fields: Seq[String])(implicit typeTag: TypeTag[A]): List[A] = {
       val r = new BufferedReader(new FileReader(f))
       val fields = caseClassParams[A]
       try {
@@ -108,7 +108,7 @@ package object unsafe {
                             skipHeader: Boolean = false,
                             delimiter:Char = RecordSplitter.defaultFieldSeparator,
                             trimming: Trimming = NoAction,
-                            fields: List[String])(implicit typeTag: TypeTag[A]): List[A] = {
+                            fields: Seq[String])(implicit typeTag: TypeTag[A]): List[A] = {
       readCSVFromFile(new File(fileName), skipHeader, delimiter, trimming, fields)
     }
 
