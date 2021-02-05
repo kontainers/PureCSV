@@ -70,7 +70,7 @@ package object unsafe {
     def readCSVFromReader(r: Reader,
                           delimiter: Char = RecordSplitter.defaultFieldSeparator,
                           trimming: Trimming = NoAction,
-                          headers: Headers = ParseHeaders)(implicit typeTag: ClassTag[A]): Iterator[A] = {
+                          headers: Headers = ParseHeaders)(implicit classTag: ClassTag[A]): Iterator[A] = {
       RecordSplitterImpl.getRecords(r, caseClassParams[A], delimiter, trimming = trimming, headers = headers)
         .map(record => rfc.from(record.toSeq))
     }
@@ -78,7 +78,7 @@ package object unsafe {
     def readCSVFromString(s: String,
                           delimiter: Char = RecordSplitter.defaultFieldSeparator,
                           trimming: Trimming = NoAction,
-                          headers: Headers = ParseHeaders)(implicit typeTag: ClassTag[A]): List[A] = {
+                          headers: Headers = ParseHeaders)(implicit classTag: ClassTag[A]): List[A] = {
       val r = new StringReader(s)
       try {
         readCSVFromReader(r, delimiter, trimming, headers).toList
@@ -90,7 +90,7 @@ package object unsafe {
     def readCSVFromFile(f: File,
                         delimiter: Char = RecordSplitter.defaultFieldSeparator,
                         trimming: Trimming = NoAction,
-                        headers: Headers = ParseHeaders)(implicit typeTag: ClassTag[A]): List[A] = {
+                        headers: Headers = ParseHeaders)(implicit classTag: ClassTag[A]): List[A] = {
       val r = FileUtil.createReader(f)
       try {
         readCSVFromReader(r, delimiter, trimming, headers).toList
@@ -102,7 +102,7 @@ package object unsafe {
     def readCSVFromFileName(fileName: String,
                             delimiter: Char = RecordSplitter.defaultFieldSeparator,
                             trimming: Trimming = NoAction,
-                            headers: Headers = ParseHeaders)(implicit typeTag: ClassTag[A]): List[A] = {
+                            headers: Headers = ParseHeaders)(implicit classTag: ClassTag[A]): List[A] = {
       readCSVFromFile(new File(fileName), delimiter, trimming, headers)
     }
 
