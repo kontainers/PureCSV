@@ -34,6 +34,6 @@ package object tryutil {
     }
   }
 
-  implicit class IteratorOfTry[A](iter: Iterator[Try[A]]) extends IterableOfTry[A](iter.to(Iterable))
+  implicit class IteratorOfTry[A](iter: Iterator[Try[A]]) extends IterableOfTry[A](iter.toIterable)
 
 }
