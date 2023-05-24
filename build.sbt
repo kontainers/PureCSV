@@ -51,6 +51,6 @@ lazy val pureCSV = project.in(file(".")).
     libraryDependencies ++= Seq(
       "com.chuusai" %% "shapeless" % "2.3.10",
       "com.github.tototoshi" %% "scala-csv" % "1.3.10",
-      "org.scalatest" %% "scalatest" % "3.2.15" % Test
+      "org.scalatest" %% "scalatest" % "3.2.16" % Test
     )
   )
