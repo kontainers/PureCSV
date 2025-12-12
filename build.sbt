@@ -3,7 +3,7 @@ import sbt.Keys._
 lazy val buildSettings = Seq(
   organization := "io.kontainers",
   scalaVersion := "2.13.15",
-  crossScalaVersions := Seq("2.12.17", scalaVersion.value)
+  crossScalaVersions := Seq("2.12.21", scalaVersion.value)
 )
 
 lazy val publishSettings = Seq(
